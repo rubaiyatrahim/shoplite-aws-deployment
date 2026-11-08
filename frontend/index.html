@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShopLite Catalog</title>
+    <!-- Bootstrap CDN for minimal effort styling -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-light">
+    <div class="container mt-5" style="max-width: 800px">
+      <h1 class="mb-4 text-center">ShopLite Product Catalog</h1>
+
+      <!-- Add Product Form -->
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">Add New Product</div>
+        <div class="card-body">
+          <form id="productForm">
+            <div class="mb-3">
+              <label for="name" class="form-label">Product Name</label>
+              <input type="text" class="form-control" id="name" required />
+            </div>
+            <div class="mb-3">
+              <label for="price" class="form-label">Price ($)</label>
+              <input
+                type="number"
+                class="form-control"
+                id="price"
+                step="0.01"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+              Add Product
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Product List -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">Available Products</div>
+        <ul class="list-group list-group-flush" id="productList">
+          <!-- Products will be injected here by JavaScript -->
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      // Points to your local Node.js server
+      const API_URL = "/api/products";
+
+      // 1. Fetch and display products from the backend
+      async function fetchProducts() {
+        try {
+          const response = await fetch(API_URL);
+          const products = await response.json();
+
+          const list = document.getElementById("productList");
+          list.innerHTML = ""; // Clear current list before updating
+
+          products.forEach((product) => {
+            const li = document.createElement("li");
+            li.className =
+              "list-group-item d-flex justify-content-between align-items-center";
+            li.innerHTML = `
+                        <strong>${product.name}</strong> 
+                        <span class="badge bg-success rounded-pill fs-6">$${product.price}</span>
+                    `;
+            list.appendChild(li);
+          });
+        } catch (error) {
+          console.error("Error fetching products:", error);
+        }
+      }
+
+      // 2. Handle form submission to add a new product
+      document
+        .getElementById("productForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault(); // Prevent the page from reloading
+
+          const name = document.getElementById("name").value;
+          const price = document.getElementById("price").value;
+
+          try {
+            const response = await fetch(API_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name, price }),
+            });
+
+            if (response.ok) {
+              document.getElementById("productForm").reset(); // Clear form inputs
+              fetchProducts(); // Refresh the list to show the new item
+            }
+          } catch (error) {
+            console.error("Error adding product:", error);
+          }
+        });
+
+      // 3. Load products immediately when the page opens
+      fetchProducts();
+    </script>
+  </body>
+</html>
