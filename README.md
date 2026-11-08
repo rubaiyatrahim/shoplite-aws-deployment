@@ -14,8 +14,8 @@ ShopLite is a containerized 3-tier e-commerce catalog application deployed on AW
 
 ## Docker Hub Images
 
-- **Frontend:** [https://hub.docker.com/repository/docker/rubaiyatrahim/shoplite-backend]
-- **Backend:** [https://hub.docker.com/repository/docker/rubaiyatrahim/shoplite-frontend]
+- **Backend:** [https://hub.docker.com/repository/docker/rubaiyatrahim/shoplite-backend]
+- **Frontend:** [https://hub.docker.com/repository/docker/rubaiyatrahim/shoplite-frontend]
 
 ## Deployment Process
 
